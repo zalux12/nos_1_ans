@@ -1,55 +1,247 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nos 1 an</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nos 1 an ❤️</title>
+
   <style>
+    * { box-sizing: border-box; }
+
     body {
       margin: 0;
       min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: linear-gradient(135deg, #ffdde1, #ee9ca7);
-      font-family: Arial, sans-serif;
-      text-align: center;
-      color: #fff;
-      padding: 25px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #fff1f4, #ffe4ec, #f8d7ff);
+      color: #3b1f2b;
+      overflow-x: hidden;
     }
 
+    .page {
+      min-height: 100vh;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 22px;
+      text-align: center;
+      animation: fade 0.8s ease;
+    }
+
+    .page.active { display: flex; }
+
     .card {
-      background: rgba(255, 255, 255, 0.20);
-      padding: 35px;
-      border-radius: 25px;
-      max-width: 700px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-      backdrop-filter: blur(8px);
+      width: 100%;
+      max-width: 720px;
+      background: rgba(255,255,255,0.75);
+      border-radius: 28px;
+      padding: 34px 24px;
+      box-shadow: 0 20px 60px rgba(100, 40, 70, 0.18);
+      backdrop-filter: blur(10px);
     }
 
     h1 {
-      font-size: 2.2em;
-      margin-bottom: 20px;
+      font-size: 2.2rem;
+      margin-bottom: 18px;
     }
 
     p {
-      font-size: 1.25em;
-      line-height: 1.6;
+      font-size: 1.15rem;
+      line-height: 1.7;
       white-space: pre-line;
+    }
+
+    button {
+      margin-top: 25px;
+      border: none;
+      padding: 15px 25px;
+      border-radius: 999px;
+      background: #ff5f8f;
+      color: white;
+      font-size: 1.05rem;
+      font-weight: 700;
+      box-shadow: 0 10px 25px rgba(255, 95, 143, 0.35);
+      cursor: pointer;
+    }
+
+    .heart {
+      font-size: 4rem;
+      animation: beat 1.2s infinite;
+    }
+
+    .counter {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-top: 20px;
+      line-height: 1.8;
+    }
+
+    .letter {
+      text-align: left;
+    }
+
+    .final {
+      font-size: 2rem;
+      font-weight: 800;
+    }
+
+    .floating-heart {
+      position: fixed;
+      bottom: -30px;
+      font-size: 22px;
+      animation: floatUp 6s linear infinite;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes beat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+
+    @keyframes floatUp {
+      from { transform: translateY(0); opacity: 0; }
+      20% { opacity: 0.6; }
+      to { transform: translateY(-110vh); opacity: 0; }
     }
   </style>
 </head>
-<body>
-  <div class="card">
-    <h1>❤️ Nos 1 an ❤️</h1>
-    <p>
-Mon texte ici...
 
-Merci pour cette première année incroyable.
-Je suis trop heureux de t’avoir dans ma vie.
+<body>
+
+  <section class="page active">
+    <div class="card">
+      <div class="heart">❤️</div>
+      <h1>Tu pensais que le cadeau était terminé ?</h1>
+      <p>Il reste encore une petite surprise...</p>
+      <button onclick="nextPage()">Continuer ❤️</button>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="card">
+      <h1>Nos 1 an</h1>
+      <p id="typing"></p>
+      <button onclick="nextPage()">Suite ❤️</button>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="card">
+      <h1>Cela fait déjà...</h1>
+      <div class="counter" id="counter"></div>
+      <p>que tu rends ma vie plus belle ❤️</p>
+      <button onclick="nextPage()">Continuer 💌</button>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="card letter">
+      <h1>Ma lettre pour toi 💌</h1>
+      <p>
+Mon amour,
+
+Aujourd’hui ça fait 1 an.
+
+1 an de souvenirs, de sourires, de moments simples mais tellement importants pour moi.
+
+Je voulais te faire ce petit message parce que les photos racontent déjà beaucoup de choses, mais pas tout.
+
+Elles montrent nos moments, nos sorties, nos souvenirs…
+Mais elles ne montrent pas à quel point je suis heureux de t’avoir dans ma vie.
+
+Merci d’être toi.
+Merci pour tout ce que tu m’apportes.
+Merci pour cette année avec toi.
 
 Je t’aime ❤️
-    </p>
-  </div>
+      </p>
+      <button onclick="nextPage()">Dernière surprise 🎁</button>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="card">
+      <div class="heart">❤️</div>
+      <p class="final">Je t’aime</p>
+      <p>Et j’espère que ce n’est que le début de nos plus beaux souvenirs.</p>
+    </div>
+  </section>
+
+  <script>
+    let current = 0;
+    const pages = document.querySelectorAll(".page");
+
+    function nextPage() {
+      pages[current].classList.remove("active");
+      current++;
+      pages[current].classList.add("active");
+
+      if (current === 1) startTyping();
+    }
+
+    const text = `Il y a un an, je ne savais pas encore à quel point tu allais compter pour moi.
+
+Depuis, il y a eu tous ces moments, tous ces souvenirs, toutes ces petites choses qui font que cette année est devenue spéciale.
+
+Et aujourd’hui, je voulais te dire une chose simplement :
+
+merci d’être entrée dans ma vie ❤️`;
+
+    let typed = false;
+
+    function startTyping() {
+      if (typed) return;
+      typed = true;
+
+      let i = 0;
+      const target = document.getElementById("typing");
+
+      function type() {
+        if (i < text.length) {
+          target.innerHTML += text.charAt(i);
+          i++;
+          setTimeout(type, 35);
+        }
+      }
+
+      type();
+    }
+
+    function updateCounter() {
+      const startDate = new Date("2025-09-21T00:00:00"); 
+      const now = new Date();
+      const diff = now - startDate;
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      document.getElementById("counter").innerHTML =
+        `${days} jours<br>${hours} heures<br>${minutes} minutes<br>${seconds} secondes`;
+    }
+
+    setInterval(updateCounter, 1000);
+    updateCounter();
+
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.className = "floating-heart";
+      heart.innerHTML = "❤️";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDuration = (4 + Math.random() * 4) + "s";
+      document.body.appendChild(heart);
+
+      setTimeout(() => heart.remove(), 8000);
+    }
+
+    setInterval(createHeart, 700);
+  </script>
+
 </body>
 </html>
