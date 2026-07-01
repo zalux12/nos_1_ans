@@ -246,17 +246,7 @@ je suis heureux d’écrire cette histoire avec toi.
 
 Je t’aime ❤️
       </p>
-      <button onclick="nextPage()">Ouvrir la dernière surprise 🎁</button>
-    </div>
-  </section>
-
-  <section class="page">
-    <div class="card">
-      <div class="envelope">💌</div>
-      <h1>Dernier petit secret...</h1>
-      <p>Appuie une dernière fois.</p>
-      <button onclick="finalReveal()">Ouvrir ❤️</button>
-    </div>
+        <button onclick="finalReveal()">Je t'aime ❤️</button>    </div>
   </section>
 
   <section class="page">
@@ -358,23 +348,18 @@ Merci d’être entrée dans ma vie ❤️`;
       document.body.appendChild(s);
       setTimeout(() => s.remove(), 3000);
     }
+function finalReveal() {
+  pages[current].classList.remove("active");
 
-    function finalReveal() {
-      pages[current].classList.remove("active");
-      current++;
+  // Aller directement à la dernière page
+  current = pages.length - 1;
+  pages[current].classList.add("active");
 
-      if (current >= pages.length) {
-        current = pages.length - 1;
-        return;
-      }
-
-      pages[current].classList.add("active");
-
-      for (let i = 0; i < 35; i++) {
-        setTimeout(createHeart, i * 80);
-        setTimeout(createSparkle, i * 55);
-      }
-    }
+  for (let i = 0; i < 35; i++) {
+    setTimeout(createHeart, i * 80);
+    setTimeout(createSparkle, i * 55);
+  }
+}
 
     setInterval(createHeart, 900);
     setInterval(createSparkle, 1200);
