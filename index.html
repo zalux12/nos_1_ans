@@ -50,6 +50,8 @@
       padding: 34px 24px;
       backdrop-filter: blur(18px);
       box-shadow: 0 25px 80px rgba(0,0,0,.22);
+      position: relative;
+      z-index: 2;
     }
 
     h1 {
@@ -130,7 +132,7 @@
       animation: floatUp linear forwards;
       opacity: .65;
       pointer-events: none;
-      z-index: 0;
+      z-index: 1;
     }
 
     .sparkle {
@@ -141,6 +143,7 @@
       border-radius: 50%;
       animation: sparkle 3s linear forwards;
       pointer-events: none;
+      z-index: 1;
     }
 
     @keyframes enter {
@@ -234,7 +237,7 @@ Alors je voulais te l’écrire ici même dans cette lettre.
 Merci d’être toi.
 Merci pour ta présence.
 Merci pour tout ce que tu m’apportes.
-Merci pour de me soutenir, de m’écouter, de me comprendre.
+Merci pour me soutenir, de m’écouter, de me comprendre.
 Bref merci d'être là, tout simplement.
 
 Je ne sais pas ce que l’avenir nous réserve exactement, mais je sais une chose :
@@ -269,17 +272,18 @@ Je t’aime ❤️
     const pages = document.querySelectorAll(".page");
 
     function nextPage() {
-      vibrate(25);
       pages[current].classList.remove("active");
       current++;
+
+      if (current >= pages.length) {
+        current = pages.length - 1;
+        return;
+      }
+
       pages[current].classList.add("active");
 
-      if (current === 2) startTyping();
-    }
-
-    function vibrate(ms) {
-      if ("vibrate" in navigator) {
-        navigator.vibrate(ms);
+      if (current === 1) {
+        startTyping();
       }
     }
 
@@ -300,6 +304,8 @@ Merci d’être entrée dans ma vie ❤️`;
       let i = 0;
       const target = document.getElementById("typing");
       const button = document.getElementById("typingButton");
+
+      target.innerHTML = "";
 
       function type() {
         if (i < text.length) {
@@ -354,9 +360,14 @@ Merci d’être entrée dans ma vie ❤️`;
     }
 
     function finalReveal() {
-      vibrate([80, 40, 120]);
       pages[current].classList.remove("active");
       current++;
+
+      if (current >= pages.length) {
+        current = pages.length - 1;
+        return;
+      }
+
       pages[current].classList.add("active");
 
       for (let i = 0; i < 35; i++) {
