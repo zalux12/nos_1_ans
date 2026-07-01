@@ -2,100 +2,150 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nos 1 an ❤️</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Notre petite surprise ❤️</title>
 
   <style>
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
     body {
       margin: 0;
       min-height: 100vh;
+      overflow: hidden;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: linear-gradient(135deg, #fff1f4, #ffe4ec, #f8d7ff);
-      color: #3b1f2b;
-      overflow-x: hidden;
+      color: #fff;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.35), transparent 25%),
+        linear-gradient(135deg, #321428, #b94b73, #ffd1dc);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(120deg, rgba(255,255,255,.18), transparent, rgba(255,255,255,.14));
+      animation: shimmer 8s infinite alternate;
+      pointer-events: none;
     }
 
     .page {
-      min-height: 100vh;
+      position: fixed;
+      inset: 0;
       display: none;
       align-items: center;
       justify-content: center;
-      padding: 30px 22px;
+      padding: 24px;
       text-align: center;
-      animation: fade 0.8s ease;
+      animation: enter .75s ease both;
     }
 
     .page.active { display: flex; }
 
     .card {
       width: 100%;
-      max-width: 720px;
-      background: rgba(255,255,255,0.75);
-      border-radius: 28px;
+      max-width: 620px;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 34px;
       padding: 34px 24px;
-      box-shadow: 0 20px 60px rgba(100, 40, 70, 0.18);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 25px 80px rgba(0,0,0,.22);
     }
 
     h1 {
-      font-size: 2.2rem;
-      margin-bottom: 18px;
+      font-size: clamp(2rem, 8vw, 3rem);
+      margin: 0 0 18px;
+      line-height: 1.15;
     }
 
     p {
-      font-size: 1.15rem;
-      line-height: 1.7;
+      font-size: clamp(1.05rem, 4vw, 1.25rem);
+      line-height: 1.75;
       white-space: pre-line;
+      margin: 12px 0;
     }
 
     button {
-      margin-top: 25px;
+      margin-top: 26px;
       border: none;
       padding: 15px 25px;
       border-radius: 999px;
-      background: #ff5f8f;
-      color: white;
+      background: #fff;
+      color: #b73768;
       font-size: 1.05rem;
-      font-weight: 700;
-      box-shadow: 0 10px 25px rgba(255, 95, 143, 0.35);
+      font-weight: 800;
       cursor: pointer;
+      box-shadow: 0 16px 35px rgba(0,0,0,.20);
+      transition: transform .2s ease;
     }
 
+    button:active { transform: scale(.96); }
+
     .heart {
-      font-size: 4rem;
+      font-size: 4.8rem;
+      margin-bottom: 12px;
       animation: beat 1.2s infinite;
     }
 
+    .small {
+      opacity: .9;
+      font-size: 1rem;
+    }
+
     .counter {
-      font-size: 1.4rem;
-      font-weight: 700;
       margin-top: 20px;
-      line-height: 1.8;
+      font-size: clamp(1.4rem, 6vw, 2rem);
+      font-weight: 900;
+      line-height: 1.7;
     }
 
     .letter {
       text-align: left;
+      max-height: 72vh;
+      overflow-y: auto;
     }
 
-    .final {
-      font-size: 2rem;
-      font-weight: 800;
+    .letter h1 { text-align: center; }
+
+    .envelope {
+      font-size: 5.5rem;
+      animation: openEnvelope 1.6s infinite alternate ease-in-out;
+    }
+
+    .final-title {
+      font-size: clamp(2.5rem, 11vw, 4.5rem);
+      font-weight: 900;
+      margin: 10px 0;
+      animation: glow 2s infinite alternate;
+    }
+
+    .hidden {
+      display: none;
     }
 
     .floating-heart {
       position: fixed;
-      bottom: -30px;
+      bottom: -40px;
       font-size: 22px;
-      animation: floatUp 6s linear infinite;
-      opacity: 0.5;
+      animation: floatUp linear forwards;
+      opacity: .65;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .sparkle {
+      position: fixed;
+      width: 6px;
+      height: 6px;
+      background: rgba(255,255,255,.9);
+      border-radius: 50%;
+      animation: sparkle 3s linear forwards;
       pointer-events: none;
     }
 
-    @keyframes fade {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+    @keyframes enter {
+      from { opacity: 0; transform: translateY(20px) scale(.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     @keyframes beat {
@@ -103,10 +153,30 @@
       50% { transform: scale(1.15); }
     }
 
+    @keyframes shimmer {
+      from { transform: translateX(-20px); opacity: .7; }
+      to { transform: translateX(20px); opacity: 1; }
+    }
+
     @keyframes floatUp {
-      from { transform: translateY(0); opacity: 0; }
-      20% { opacity: 0.6; }
-      to { transform: translateY(-110vh); opacity: 0; }
+      from { transform: translateY(0) rotate(0deg); opacity: 0; }
+      15% { opacity: .7; }
+      to { transform: translateY(-115vh) rotate(35deg); opacity: 0; }
+    }
+
+    @keyframes sparkle {
+      from { transform: scale(0); opacity: 1; }
+      to { transform: scale(2.2); opacity: 0; }
+    }
+
+    @keyframes openEnvelope {
+      from { transform: rotate(-3deg) scale(1); }
+      to { transform: rotate(3deg) scale(1.08); }
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px rgba(255,255,255,.4); }
+      to { text-shadow: 0 0 28px rgba(255,255,255,.95); }
     }
   </style>
 </head>
@@ -116,9 +186,19 @@
   <section class="page active">
     <div class="card">
       <div class="heart">❤️</div>
-      <h1>Tu pensais que le cadeau était terminé ?</h1>
-      <p>Il reste encore une petite surprise...</p>
-      <button onclick="nextPage()">Continuer ❤️</button>
+      <h1>Si tu es arrivée ici...</h1>
+      <p>c’est que tu as trouvé ma dernière surprise.</p>
+      <p class="small">La photobox raconte nos souvenirs… mais moi, je voulais te dire le reste.</p>
+      <button onclick="nextPage()">Commencer ❤️</button>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="card">
+      <h1>Avant de continuer...</h1>
+      <p>promets-moi juste une chose :</p>
+      <p>lis ça jusqu’au bout, doucement, comme si j’étais juste à côté de toi.</p>
+      <button onclick="nextPage()">Je te le promets ❤️</button>
     </div>
   </section>
 
@@ -126,7 +206,7 @@
     <div class="card">
       <h1>Nos 1 an</h1>
       <p id="typing"></p>
-      <button onclick="nextPage()">Suite ❤️</button>
+      <button id="typingButton" class="hidden" onclick="nextPage()">Continuer ✨</button>
     </div>
   </section>
 
@@ -134,8 +214,8 @@
     <div class="card">
       <h1>Cela fait déjà...</h1>
       <div class="counter" id="counter"></div>
-      <p>que tu rends ma vie plus belle ❤️</p>
-      <button onclick="nextPage()">Continuer 💌</button>
+      <p>que tu fais partie de ma vie ❤️</p>
+      <button onclick="nextPage()">Lire ma lettre 💌</button>
     </div>
   </section>
 
@@ -145,29 +225,48 @@
       <p>
 Mon amour,
 
-Aujourd’hui ça fait 1 an.
+Aujourd’hui, ça fait 1 an.
 
-1 an de souvenirs, de sourires, de moments simples mais tellement importants pour moi.
+1 an de souvenirs, de sourires, de moments simples, de petites habitudes, de fous rires, de regards, de discussions, de moments qui peuvent paraître normaux… mais qui comptent énormément pour moi.
 
-Je voulais te faire ce petit message parce que les photos racontent déjà beaucoup de choses, mais pas tout.
+Avec cette photobox, tu as sous les yeux une partie de notre histoire.
 
-Elles montrent nos moments, nos sorties, nos souvenirs…
-Mais elles ne montrent pas à quel point je suis heureux de t’avoir dans ma vie.
+Mais il y a des choses qu’une photo ne peut pas montrer.
+
+Une photo ne peut pas montrer à quel point je suis heureux de t’avoir dans ma vie.
+Elle ne peut pas montrer ce que je ressens quand je pense à toi.
+Elle ne peut pas montrer à quel point cette année avec toi a compté pour moi.
+
+Alors je voulais te l’écrire ici.
 
 Merci d’être toi.
+Merci pour ta présence.
 Merci pour tout ce que tu m’apportes.
-Merci pour cette année avec toi.
+Merci pour cette première année à deux.
+
+Je ne sais pas ce que l’avenir nous réserve exactement, mais je sais une chose :
+
+je suis heureux d’écrire cette histoire avec toi.
 
 Je t’aime ❤️
       </p>
-      <button onclick="nextPage()">Dernière surprise 🎁</button>
+      <button onclick="nextPage()">Ouvrir la dernière surprise 🎁</button>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="card">
+      <div class="envelope">💌</div>
+      <h1>Dernier petit secret...</h1>
+      <p>Appuie une dernière fois.</p>
+      <button onclick="finalReveal()">Ouvrir ❤️</button>
     </div>
   </section>
 
   <section class="page">
     <div class="card">
       <div class="heart">❤️</div>
-      <p class="final">Je t’aime</p>
+      <div class="final-title">Je t’aime</div>
       <p>Et j’espère que ce n’est que le début de nos plus beaux souvenirs.</p>
     </div>
   </section>
@@ -177,20 +276,32 @@ Je t’aime ❤️
     const pages = document.querySelectorAll(".page");
 
     function nextPage() {
+      vibrate(25);
       pages[current].classList.remove("active");
       current++;
       pages[current].classList.add("active");
 
-      if (current === 1) startTyping();
+      if (current === 2) startTyping();
+    }
+
+    function vibrate(ms) {
+      if ("vibrate" in navigator) {
+        navigator.vibrate(ms);
+      }
     }
 
     const text = `Il y a un an, je ne savais pas encore à quel point tu allais compter pour moi.
 
-Depuis, il y a eu tous ces moments, tous ces souvenirs, toutes ces petites choses qui font que cette année est devenue spéciale.
+Et aujourd’hui, en repensant à tout ce qu’on a vécu, je me rends compte que cette année a été remplie de moments que je n’oublierai jamais.
 
-Et aujourd’hui, je voulais te dire une chose simplement :
+Des moments simples.
+Des moments drôles.
+Des moments tendres.
+Des souvenirs à nous.
 
-merci d’être entrée dans ma vie ❤️`;
+Alors avant que tu continues, je voulais juste te dire merci.
+
+Merci d’être entrée dans ma vie ❤️`;
 
     let typed = false;
 
@@ -200,12 +311,15 @@ merci d’être entrée dans ma vie ❤️`;
 
       let i = 0;
       const target = document.getElementById("typing");
+      const button = document.getElementById("typingButton");
 
       function type() {
         if (i < text.length) {
           target.innerHTML += text.charAt(i);
           i++;
-          setTimeout(type, 35);
+          setTimeout(type, 32);
+        } else {
+          button.classList.remove("hidden");
         }
       }
 
@@ -213,9 +327,11 @@ merci d’être entrée dans ma vie ❤️`;
     }
 
     function updateCounter() {
-      const startDate = new Date("2025-09-21T00:00:00"); 
+      const startDate = new Date("2025-09-21T00:00:00");
       const now = new Date();
-      const diff = now - startDate;
+
+      let diff = now - startDate;
+      if (diff < 0) diff = 0;
 
       const days = Math.floor(diff / (1000 * 60 * 60 * 24));
       const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
@@ -232,15 +348,37 @@ merci d’être entrée dans ma vie ❤️`;
     function createHeart() {
       const heart = document.createElement("div");
       heart.className = "floating-heart";
-      heart.innerHTML = "❤️";
+      heart.innerHTML = Math.random() > 0.5 ? "❤️" : "💕";
       heart.style.left = Math.random() * 100 + "vw";
-      heart.style.animationDuration = (4 + Math.random() * 4) + "s";
+      heart.style.animationDuration = (5 + Math.random() * 5) + "s";
+      heart.style.fontSize = (16 + Math.random() * 18) + "px";
       document.body.appendChild(heart);
-
-      setTimeout(() => heart.remove(), 8000);
+      setTimeout(() => heart.remove(), 10000);
     }
 
-    setInterval(createHeart, 700);
+    function createSparkle() {
+      const s = document.createElement("div");
+      s.className = "sparkle";
+      s.style.left = Math.random() * 100 + "vw";
+      s.style.top = Math.random() * 100 + "vh";
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 3000);
+    }
+
+    function finalReveal() {
+      vibrate([80, 40, 120]);
+      pages[current].classList.remove("active");
+      current++;
+      pages[current].classList.add("active");
+
+      for (let i = 0; i < 35; i++) {
+        setTimeout(createHeart, i * 80);
+        setTimeout(createSparkle, i * 55);
+      }
+    }
+
+    setInterval(createHeart, 900);
+    setInterval(createSparkle, 1200);
   </script>
 
 </body>
