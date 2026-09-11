@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Quiz Année 01</title>
+  <style>
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    :root{--pink:#b73768;--pink2:#e67b9f;--bg1:#321428;--bg2:#b94b73;--bg3:#ffd1dc;--glass:rgba(255,255,255,.18);--border:rgba(255,255,255,.28)}
+    body{margin:0;min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#fff;background:radial-gradient(circle at 20% 20%,rgba(255,255,255,.28),transparent 25%),linear-gradient(135deg,var(--bg1),var(--bg2),var(--bg3));background-attachment:fixed}
+    body:before{content:"";position:fixed;inset:0;background:linear-gradient(120deg,rgba(255,255,255,.12),transparent,rgba(255,255,255,.1));pointer-events:none}
+    .wrap{width:min(1100px,calc(100% - 28px));margin:0 auto;padding:28px 0 54px;position:relative;z-index:1}
+    .top{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:18px}
+    h1{margin:0;font-size:clamp(1.8rem,5vw,2.8rem)}
+    .subtitle{margin:7px 0 0;opacity:.86}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid var(--border);border-radius:999px;background:rgba(255,255,255,.12);backdrop-filter:blur(12px);font-weight:700}
+    .notice{background:rgba(49,16,38,.34);border:1px solid rgba(255,255,255,.22);border-radius:22px;padding:15px 17px;line-height:1.5;margin:16px 0 20px}
+    .notice strong{display:block;margin-bottom:4px}
+    .layout{display:grid;grid-template-columns:240px minmax(0,1fr);gap:18px}
+    .panel{background:var(--glass);border:1px solid var(--border);border-radius:28px;backdrop-filter:blur(18px);box-shadow:0 22px 60px rgba(0,0,0,.18)}
+    .nav{padding:16px;position:sticky;top:16px;height:max-content}
+    .nav-title{font-weight:900;margin:3px 5px 12px}
+    .qnav{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .qbtn{margin:0;padding:11px 4px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#fff;border-radius:14px;font-weight:900;cursor:pointer}
+    .qbtn.active{background:#fff;color:var(--pink);box-shadow:0 10px 24px rgba(0,0,0,.16)}
+    .editor{padding:24px}
+    .headrow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+    .headrow h2{margin:0;font-size:1.5rem}
+    .saved{font-size:.92rem;opacity:.84}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .full{grid-column:1/-1}
+    label{display:block;font-size:.9rem;font-weight:800;margin:0 0 7px 3px}
+    input,textarea,select{width:100%;border:none;outline:none;border-radius:16px;padding:13px 14px;background:rgba(255,255,255,.94);color:#4d1831;font:inherit;box-shadow:inset 0 0 0 1px rgba(183,55,104,.08)}
+    textarea{min-height:92px;resize:vertical}
+    input[type=file]{padding:10px;background:rgba(255,255,255,.9)}
+    .answergrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .answerbox{display:grid;grid-template-columns:46px 1fr;gap:8px;align-items:center}
+    .badge{height:44px;border-radius:14px;display:grid;place-items:center;background:rgba(255,255,255,.16);font-weight:900;border:1px solid rgba(255,255,255,.18)}
+    .preview{display:none;margin-top:12px;border-radius:20px;overflow:hidden;background:rgba(0,0,0,.12);border:1px solid rgba(255,255,255,.2)}
+    .preview img{display:block;width:100%;max-height:340px;object-fit:contain;background:rgba(0,0,0,.12)}
+    .preview small{display:block;padding:9px 12px;opacity:.84}
+    .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+    button,.fakebtn{border:none;padding:13px 18px;border-radius:999px;background:#fff;color:var(--pink);font-size:.98rem;font-weight:900;cursor:pointer;box-shadow:0 12px 28px rgba(0,0,0,.17);text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+    button.secondary,.fakebtn.secondary{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.25);box-shadow:none}
+    button.danger{background:rgba(80,5,28,.5);color:#fff;border:1px solid rgba(255,255,255,.2);box-shadow:none}
+    .footerpanel{margin-top:18px;padding:20px}
+    .footerpanel h3{margin:0 0 8px}
+    .footerpanel p{margin:0 0 14px;line-height:1.5;opacity:.9}
+    .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(25px);background:#fff;color:var(--pink);padding:12px 18px;border-radius:999px;font-weight:900;opacity:0;pointer-events:none;transition:.25s;z-index:20;box-shadow:0 18px 45px rgba(0,0,0,.24)}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    @media(max-width:820px){.layout{grid-template-columns:1fr}.nav{position:static}.qnav{grid-template-columns:repeat(5,1fr)}.grid,.answergrid{grid-template-columns:1fr}.full{grid-column:auto}.editor{padding:18px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <h1>Quiz Année 01 ❤️</h1>
+        <p class="subtitle">Éditeur des 15 questions — Julien & Marie</p>
+      </div>
+      <div class="pill">🔒 Admin local</div>
+    </div>
+
+    <div class="notice">
+      <strong>Important</strong>
+      Le bouton « Enregistrer » garde tes questions dans ce navigateur. Quand tes 15 questions sont prêtes, utilise « Exporter le JSON » ou « Copier la config » pour publier la version définitive sur le site.
+    </div>
+
+    <div class="layout">
+      <aside class="panel nav">
+        <div class="nav-title">Questions</div>
+        <div class="qnav" id="qnav"></div>
+      </aside>
+
+      <main class="panel editor">
+        <div class="headrow">
+          <h2 id="editorTitle">Question 1 / 15</h2>
+          <div class="saved" id="savedState">Pas encore modifiée</div>
+        </div>
+
+        <div class="grid">
+          <div>
+            <label>Type</label>
+            <select id="type">
+              <option value="classic">QCM classique</option>
+              <option value="photo">Photo + question</option>
+              <option value="quote">Phrase / Qui a dit ça ?</option>
+              <option value="memory">Souvenir / date / lieu</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Bonne réponse</label>
+            <select id="correct">
+              <option value="0">A</option>
+              <option value="1">B</option>
+              <option value="2">C</option>
+              <option value="3">D</option>
+            </select>
+          </div>
+
+          <div class="full">
+            <label>Question</label>
+            <input id="question" placeholder="Ex. Où avons-nous pris cette photo ? 📸" />
+          </div>
+
+          <div class="full">
+            <label>Phrase / citation (optionnel)</label>
+            <textarea id="quote" placeholder="Ex. « Dépêche-toi, j’ai trop faim »"></textarea>
+          </div>
+
+          <div class="full">
+            <label>Chemin de la photo sur le site (optionnel)</label>
+            <input id="imagePath" placeholder="Ex. images/q1.jpg" />
+          </div>
+
+          <div class="full">
+            <label>Choisir une photo pour l’aperçu (optionnel)</label>
+            <input id="imageFile" type="file" accept="image/*" />
+            <div class="preview" id="preview"><img id="previewImg" alt="Aperçu"><small id="previewName"></small></div>
+          </div>
+
+          <div class="full">
+            <label>Réponses</label>
+            <div class="answergrid">
+              <div class="answerbox"><div class="badge">A</div><input id="a0" placeholder="Réponse A" /></div>
+              <div class="answerbox"><div class="badge">B</div><input id="a1" placeholder="Réponse B" /></div>
+              <div class="answerbox"><div class="badge">C</div><input id="a2" placeholder="Réponse C" /></div>
+              <div class="answerbox"><div class="badge">D</div><input id="a3" placeholder="Réponse D" /></div>
+            </div>
+          </div>
+
+          <div>
+            <label>Message si elle répond juste</label>
+            <textarea id="goodMessage" placeholder="Évidemment 😌❤️"></textarea>
+          </div>
+
+          <div>
+            <label>Message si elle répond faux</label>
+            <textarea id="badMessage" placeholder="MAIS MARIE 😭"></textarea>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="saveBtn">Enregistrer cette question</button>
+          <button class="secondary" id="prevBtn">← Précédente</button>
+          <button class="secondary" id="nextBtn">Suivante →</button>
+        </div>
+      </main>
+    </div>
+
+    <section class="panel footerpanel">
+      <h3>Quand tes 15 questions sont terminées</h3>
+      <p>Tu peux sauvegarder une copie complète sur ton PC ou copier directement la configuration JavaScript. L’import permet de reprendre plus tard sur un autre navigateur.</p>
+      <div class="actions">
+        <button id="exportBtn">Exporter le JSON</button>
+        <button id="copyBtn">Copier la config</button>
+        <label class="fakebtn secondary" for="importFile">Importer un JSON</label>
+        <input id="importFile" type="file" accept="application/json,.json" hidden>
+        <button class="danger" id="resetBtn">Tout effacer</button>
+        <a class="fakebtn secondary" href="../">Voir le site</a>
+      </div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast">Enregistré ✓</div>
+
+  <script>
+    const STORAGE_KEY = 'nos1ans_quiz_admin_v1';
+    const TOTAL = 15;
+    let current = 0;
+
+    const emptyQuestion = () => ({
+      type:'classic', question:'', quote:'', image:'',
+      answers:['','','',''], correct:0,
+      goodMessage:'', badMessage:'', updatedAt:null
+    });
+
+    let questions = loadQuestions();
+
+    function loadQuestions(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return Array.from({length:TOTAL}, emptyQuestion);
+        const parsed = JSON.parse(raw);
+        const arr = Array.isArray(parsed) ? parsed : parsed.questions;
+        if(!Array.isArray(arr)) throw new Error('Format invalide');
+        return Array.from({length:TOTAL},(_,i)=>({...emptyQuestion(),...(arr[i]||{})}));
+      }catch(e){
+        return Array.from({length:TOTAL}, emptyQuestion);
+      }
+    }
+
+    function saveAll(){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(questions));
+    }
+
+    function el(id){return document.getElementById(id)}
+
+    function renderNav(){
+      const nav=el('qnav'); nav.innerHTML='';
+      questions.forEach((q,i)=>{
+        const b=document.createElement('button');
+        b.className='qbtn'+(i===current?' active':'');
+        b.textContent=i+1;
+        b.title=q.question||`Question ${i+1}`;
+        b.onclick=()=>{capture(false);current=i;render()};
+        nav.appendChild(b);
+      });
+    }
+
+    function render(){
+      const q=questions[current];
+      el('editorTitle').textContent=`Question ${current+1} / ${TOTAL}`;
+      el('type').value=q.type||'classic';
+      el('question').value=q.question||'';
+      el('quote').value=q.quote||'';
+      el('imagePath').value=q.image||'';
+      el('correct').value=String(q.correct??0);
+      el('a0').value=q.answers?.[0]||'';
+      el('a1').value=q.answers?.[1]||'';
+      el('a2').value=q.answers?.[2]||'';
+      el('a3').value=q.answers?.[3]||'';
+      el('goodMessage').value=q.goodMessage||'';
+      el('badMessage').value=q.badMessage||'';
+      el('savedState').textContent=q.updatedAt ? `Enregistrée ${new Date(q.updatedAt).toLocaleString('fr-FR')}` : 'Pas encore modifiée';
+      el('preview').style.display='none';
+      el('imageFile').value='';
+      renderNav();
+    }
+
+    function capture(showToast=true){
+      const q=questions[current];
+      q.type=el('type').value;
+      q.question=el('question').value.trim();
+      q.quote=el('quote').value.trim();
+      q.image=el('imagePath').value.trim();
+      q.answers=[0,1,2,3].map(i=>el('a'+i).value.trim());
+      q.correct=Number(el('correct').value);
+      q.goodMessage=el('goodMessage').value.trim();
+      q.badMessage=el('badMessage').value.trim();
+      q.updatedAt=new Date().toISOString();
+      saveAll();
+      if(showToast) toast('Question enregistrée ✓');
+      renderNav();
+      el('savedState').textContent=`Enregistrée ${new Date(q.updatedAt).toLocaleString('fr-FR')}`;
+    }
+
+    function toast(msg){
+      const t=el('toast');t.textContent=msg;t.classList.add('show');
+      clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.classList.remove('show'),1800);
+    }
+
+    el('saveBtn').onclick=()=>capture(true);
+    el('prevBtn').onclick=()=>{capture(false);current=(current-1+TOTAL)%TOTAL;render()};
+    el('nextBtn').onclick=()=>{capture(false);current=(current+1)%TOTAL;render()};
+
+    el('imageFile').addEventListener('change',e=>{
+      const file=e.target.files?.[0]; if(!file) return;
+      const url=URL.createObjectURL(file);
+      el('previewImg').src=url; el('previewName').textContent=`Aperçu local : ${file.name}`;
+      el('preview').style.display='block';
+      if(!el('imagePath').value.trim()) el('imagePath').value=`images/${file.name}`;
+    });
+
+    function cleanExport(){
+      capture(false);
+      return questions.map(({updatedAt,...q})=>q);
+    }
+
+    el('exportBtn').onclick=()=>{
+      const data=JSON.stringify({version:1,questions:cleanExport()},null,2);
+      const blob=new Blob([data],{type:'application/json'});
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(blob);a.download='quiz-annee-01.json';a.click();
+      setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+      toast('JSON exporté ✓');
+    };
+
+    el('copyBtn').onclick=async()=>{
+      const js='const questions = '+JSON.stringify(cleanExport(),null,2)+';';
+      try{await navigator.clipboard.writeText(js);toast('Configuration copiée ✓')}
+      catch(e){prompt('Copie cette configuration :',js)}
+    };
+
+    el('importFile').addEventListener('change',async e=>{
+      const file=e.target.files?.[0]; if(!file)return;
+      try{
+        const parsed=JSON.parse(await file.text());
+        const arr=Array.isArray(parsed)?parsed:parsed.questions;
+        if(!Array.isArray(arr)) throw new Error();
+        questions=Array.from({length:TOTAL},(_,i)=>({...emptyQuestion(),...(arr[i]||{}),updatedAt:new Date().toISOString()}));
+        saveAll(); current=0; render(); toast('Import réussi ✓');
+      }catch(err){alert('Ce fichier JSON n’est pas valide pour cet éditeur.')}
+      e.target.value='';
+    });
+
+    el('resetBtn').onclick=()=>{
+      if(!confirm('Effacer les 15 questions enregistrées dans ce navigateur ?')) return;
+      questions=Array.from({length:TOTAL},emptyQuestion);saveAll();current=0;render();toast('Tout a été effacé');
+    };
+
+    render();
+  </script>
+</body>
+</html>
