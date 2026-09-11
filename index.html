@@ -78,10 +78,11 @@
       font-weight: 800;
       cursor: pointer;
       box-shadow: 0 16px 35px rgba(0,0,0,.20);
-      transition: transform .2s ease;
+      transition: transform .2s ease, opacity .2s ease;
     }
 
     button:active { transform: scale(.96); }
+    button:disabled { opacity: .55; cursor: default; }
 
     .heart {
       font-size: 4.8rem;
@@ -109,11 +110,6 @@
 
     .letter h1 { text-align: center; }
 
-    .envelope {
-      font-size: 5.5rem;
-      animation: openEnvelope 1.6s infinite alternate ease-in-out;
-    }
-
     .final-title {
       font-size: clamp(2.5rem, 11vw, 4.5rem);
       font-weight: 900;
@@ -121,9 +117,7 @@
       animation: glow 2s infinite alternate;
     }
 
-    .hidden {
-      display: none;
-    }
+    .hidden { display: none !important; }
 
     .floating-heart {
       position: fixed;
@@ -144,6 +138,103 @@
       animation: sparkle 3s linear forwards;
       pointer-events: none;
       z-index: 1;
+    }
+
+    /* QUIZ */
+    .quiz-card {
+      max-height: 88vh;
+      overflow-y: auto;
+    }
+
+    .quiz-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: .95rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 9px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.2);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .progress-bar {
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: #fff;
+      transition: width .35s ease;
+    }
+
+    .question-media {
+      display: block;
+      width: 100%;
+      max-height: 280px;
+      object-fit: cover;
+      border-radius: 22px;
+      margin: 0 auto 20px;
+      box-shadow: 0 14px 35px rgba(0,0,0,.2);
+    }
+
+    .quote-box {
+      margin: 0 0 20px;
+      padding: 18px;
+      border-radius: 22px;
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.22);
+      font-size: 1.12rem;
+      font-style: italic;
+      line-height: 1.6;
+    }
+
+    .answers {
+      display: grid;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .answer-btn {
+      width: 100%;
+      margin: 0;
+      padding: 15px 18px;
+      border-radius: 18px;
+      text-align: left;
+      background: rgba(255,255,255,.95);
+      color: #8f2f56;
+      box-shadow: 0 10px 22px rgba(0,0,0,.14);
+    }
+
+    .answer-btn.correct {
+      background: #e7ffe9;
+      color: #267338;
+    }
+
+    .answer-btn.wrong {
+      background: #ffe7ec;
+      color: #a5304d;
+    }
+
+    .feedback {
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.14);
+      border: 1px solid rgba(255,255,255,.2);
+      font-weight: 700;
+      line-height: 1.55;
+    }
+
+    .result-score {
+      font-size: clamp(3rem, 14vw, 5.5rem);
+      font-weight: 900;
+      margin: 8px 0 14px;
     }
 
     @keyframes enter {
@@ -172,11 +263,6 @@
       to { transform: scale(2.2); opacity: 0; }
     }
 
-    @keyframes openEnvelope {
-      from { transform: rotate(-3deg) scale(1); }
-      to { transform: rotate(3deg) scale(1.08); }
-    }
-
     @keyframes glow {
       from { text-shadow: 0 0 10px rgba(255,255,255,.4); }
       to { text-shadow: 0 0 28px rgba(255,255,255,.95); }
@@ -191,7 +277,7 @@
       <div class="heart">❤️</div>
       <h1>Si tu es arrivée ici...</h1>
       <p>c’est que tu as trouvé ma dernière surprise !</p>
-      <p class="small">La photobox raconte nos souvenirs en photo … mais j'ai encore quelque chose à te dire</p>
+      <p class="small">La photobox raconte nos souvenirs en photo… mais j’ai encore quelques petites choses à te faire revivre 👀</p>
       <button onclick="nextPage()">Commencer ❤️</button>
     </div>
   </section>
@@ -209,6 +295,43 @@
       <h1>Cela fait déjà...</h1>
       <div class="counter" id="counter"></div>
       <p>que tu fais partie de ma vie ❤️</p>
+      <button onclick="nextPage()">Petit test maintenant 😈</button>
+    </div>
+  </section>
+
+  <section class="page" id="quizIntroPage">
+    <div class="card">
+      <div class="heart">🧠</div>
+      <h1>Tu crois vraiment bien connaître notre première année ?</h1>
+      <p>15 questions. Quelques pièges. Beaucoup de souvenirs.</p>
+      <p class="small">Pas de triche avec la Photobox 😏</p>
+      <button onclick="startQuiz()">Commencer le quiz ❤️</button>
+    </div>
+  </section>
+
+  <section class="page" id="quizPage">
+    <div class="card quiz-card">
+      <div class="quiz-top">
+        <span id="questionNumber">Question 1 / 15</span>
+        <span id="liveScore">0 point</span>
+      </div>
+      <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+
+      <img id="questionImage" class="question-media hidden" alt="Souvenir" />
+      <div id="questionQuote" class="quote-box hidden"></div>
+      <h1 id="questionText">Question</h1>
+      <div class="answers" id="answers"></div>
+      <div class="feedback hidden" id="feedback"></div>
+      <button id="nextQuestionButton" class="hidden" onclick="nextQuestion()">Question suivante →</button>
+    </div>
+  </section>
+
+  <section class="page" id="quizResultPage">
+    <div class="card">
+      <div class="heart">🏆</div>
+      <h1>Résultat</h1>
+      <div class="result-score" id="resultScore">0 / 15</div>
+      <p id="resultMessage"></p>
       <button onclick="nextPage()">Lire ma lettre 💌</button>
     </div>
   </section>
@@ -246,7 +369,8 @@ je suis heureux d’écrire cette histoire avec toi.
 
 Je t’aime ❤️
       </p>
-        <button onclick="finalReveal()">Clique une dernière fois</button>    </div>
+      <button onclick="finalReveal()">Clique une dernière fois</button>
+    </div>
   </section>
 
   <section class="page">
@@ -261,6 +385,12 @@ Je t’aime ❤️
     let current = 0;
     const pages = document.querySelectorAll(".page");
 
+    function showPage(index) {
+      pages[current].classList.remove("active");
+      current = index;
+      pages[current].classList.add("active");
+    }
+
     function nextPage() {
       pages[current].classList.remove("active");
       current++;
@@ -272,9 +402,7 @@ Je t’aime ❤️
 
       pages[current].classList.add("active");
 
-      if (current === 1) {
-        startTyping();
-      }
+      if (current === 1) startTyping();
     }
 
     const text = `Il y a un an, je ne savais pas encore à quel point tu allais compter pour moi.
@@ -294,7 +422,6 @@ Merci d’être entrée dans ma vie ❤️`;
       let i = 0;
       const target = document.getElementById("typing");
       const button = document.getElementById("typingButton");
-
       target.innerHTML = "";
 
       function type() {
@@ -306,14 +433,12 @@ Merci d’être entrée dans ma vie ❤️`;
           button.classList.remove("hidden");
         }
       }
-
       type();
     }
 
     function updateCounter() {
       const startDate = new Date("2025-09-21T02:00:00");
       const now = new Date();
-
       let diff = now - startDate;
       if (diff < 0) diff = 0;
 
@@ -328,6 +453,273 @@ Merci d’être entrée dans ma vie ❤️`;
 
     setInterval(updateCounter, 1000);
     updateCounter();
+
+    /*
+      ======================================================
+      QUESTIONS DU QUIZ
+      ------------------------------------------------------
+      Tu pourras remplacer ces 15 questions une par une.
+
+      image : chemin vers une photo, ex. "images/q1.jpg"
+      quote : phrase à afficher (laisser "" si inutile)
+      correct : numéro de la bonne réponse : 0, 1, 2 ou 3
+      ======================================================
+    */
+    const questions = [
+      {
+        question: "QUESTION 1 À PERSONNALISER",
+        image: "",
+        quote: "",
+        answers: ["Réponse A", "Réponse B", "Réponse C", "Réponse D"],
+        correct: 0,
+        goodMessage: "Bien joué 😌❤️",
+        badMessage: "Aïe 😭 On va faire comme si je n’avais rien vu."
+      },
+      {
+        question: "QUESTION 2 À PERSONNALISER",
+        image: "",
+        quote: "",
+        answers: ["Réponse A", "Réponse B", "Réponse C", "Réponse D"],
+        correct: 0,
+        goodMessage: "Évidemment 😌",
+        badMessage: "MAIS MARIE 😭"
+      },
+      {
+        question: "QUESTION 3 À PERSONNALISER",
+        image: "",
+        quote: "",
+        answers: ["Réponse A", "Réponse B", "Réponse C", "Réponse D"],
+        correct: 0,
+        goodMessage: "Tu me connais bien ❤️",
+        badMessage: "Je note ça dans le dossier 👀"
+      },
+      {
+        question: "QUESTION 4 À PERSONNALISER",
+        image: "",
+        quote: "",
+        answers: ["Réponse A", "Réponse B", "Réponse C", "Réponse D"],
+        correct: 0,
+        goodMessage: "Ouiiii ❤️",
+        badMessage: "Pas du tout 😭"
+      },
+      {
+        question: "QUESTION 5 À PERSONNALISER",
+        image: "",
+        quote: "",
+        answers: ["Réponse A", "Réponse B", "Réponse C", "Réponse D"],
+        correct: 0,
+        goodMessage: "Encore un point 😌",
+        badMessage: "Bon… on continue 😂"
+      },
+      {
+        question: "QUESTION 6 À PERSONNALISER",
+        image: "",
+        quote: "",
+        answers: ["Réponse A", "Réponse B", "Réponse C", "Réponse D"],
+        correct: 0,
+        goodMessage: "Tu t’en souviens ❤️",
+        badMessage: "Mémoire sélective apparemment 😭"
+      },
+      {
+        question: "QUESTION 7 À PERSONNALISER",
+        image: "",
+        quote: "",
+        answers: ["Réponse A", "Réponse B", "Réponse C", "Réponse D"],
+        correct: 0,
+        goodMessage: "Facile celle-là 😏",
+        badMessage: "Ça commence à devenir grave 😭"
+      },
+      {
+        question: "QUESTION 8 À PERSONNALISER",
+        image: "",
+        quote: "",
+        answers: ["Réponse A", "Réponse B", "Réponse C", "Réponse D"],
+        correct: 0,
+        goodMessage: "Validé ❤️",
+        badMessage: "Je suis déçu là 😂"
+      },
+      {
+        question: "QUESTION 9 À PERSONNALISER",
+        image: "",
+        quote: "",
+        answers: ["Réponse A", "Réponse B", "Réponse C", "Réponse D"],
+        correct: 0,
+        goodMessage: "Bien vu 👀❤️",
+        badMessage: "Non non non 😭"
+      },
+      {
+        question: "QUESTION 10 À PERSONNALISER",
+        image: "",
+        quote: "",
+        answers: ["Réponse A", "Réponse B", "Réponse C", "Réponse D"],
+        correct: 0,
+        goodMessage: "Point mérité 😌",
+        badMessage: "On va réviser la Photobox après ça."
+      },
+      {
+        question: "QUESTION 11 À PERSONNALISER",
+        image: "",
+        quote: "",
+        answers: ["Réponse A", "Réponse B", "Réponse C", "Réponse D"],
+        correct: 0,
+        goodMessage: "Tu gères ❤️",
+        badMessage: "Je retiens 😭"
+      },
+      {
+        question: "QUESTION 12 À PERSONNALISER",
+        image: "",
+        quote: "",
+        answers: ["Réponse A", "Réponse B", "Réponse C", "Réponse D"],
+        correct: 0,
+        goodMessage: "Encore juste 😏",
+        badMessage: "Aïe aïe aïe 😂"
+      },
+      {
+        question: "QUESTION 13 À PERSONNALISER",
+        image: "",
+        quote: "",
+        answers: ["Réponse A", "Réponse B", "Réponse C", "Réponse D"],
+        correct: 0,
+        goodMessage: "Je valide ❤️",
+        badMessage: "Il va falloir une session de rattrapage 😭"
+      },
+      {
+        question: "QUESTION 14 À PERSONNALISER",
+        image: "",
+        quote: "",
+        answers: ["Réponse A", "Réponse B", "Réponse C", "Réponse D"],
+        correct: 0,
+        goodMessage: "Presque au bout 😌❤️",
+        badMessage: "Celle-là aussi ? 😭"
+      },
+      {
+        question: "QUESTION 15 À PERSONNALISER",
+        image: "",
+        quote: "",
+        answers: ["Oui ❤️", "Évidemment ❤️", "Je n’ai pas le choix 😂", "Les trois"],
+        correct: 3,
+        goodMessage: "Bonne réponse. ❤️",
+        badMessage: "Mauvaise réponse… mais je t’accorde quand même le point dans mon cœur 😂"
+      }
+    ];
+
+    let quizIndex = 0;
+    let score = 0;
+    let answered = false;
+
+    function startQuiz() {
+      quizIndex = 0;
+      score = 0;
+      answered = false;
+      nextPage();
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      answered = false;
+      const q = questions[quizIndex];
+      const questionNumber = document.getElementById("questionNumber");
+      const liveScore = document.getElementById("liveScore");
+      const progressBar = document.getElementById("progressBar");
+      const questionText = document.getElementById("questionText");
+      const image = document.getElementById("questionImage");
+      const quote = document.getElementById("questionQuote");
+      const answers = document.getElementById("answers");
+      const feedback = document.getElementById("feedback");
+      const nextButton = document.getElementById("nextQuestionButton");
+
+      questionNumber.textContent = `Question ${quizIndex + 1} / ${questions.length}`;
+      liveScore.textContent = `${score} point${score > 1 ? "s" : ""}`;
+      progressBar.style.width = `${((quizIndex + 1) / questions.length) * 100}%`;
+      questionText.textContent = q.question;
+
+      feedback.classList.add("hidden");
+      feedback.textContent = "";
+      nextButton.classList.add("hidden");
+      nextButton.textContent = quizIndex === questions.length - 1 ? "Voir mon résultat ❤️" : "Question suivante →";
+
+      if (q.image) {
+        image.src = q.image;
+        image.classList.remove("hidden");
+      } else {
+        image.removeAttribute("src");
+        image.classList.add("hidden");
+      }
+
+      if (q.quote) {
+        quote.textContent = `“${q.quote}”`;
+        quote.classList.remove("hidden");
+      } else {
+        quote.textContent = "";
+        quote.classList.add("hidden");
+      }
+
+      answers.innerHTML = "";
+      q.answers.forEach((answer, index) => {
+        const button = document.createElement("button");
+        button.className = "answer-btn";
+        button.textContent = answer;
+        button.onclick = () => selectAnswer(index, button);
+        answers.appendChild(button);
+      });
+    }
+
+    function selectAnswer(selectedIndex, selectedButton) {
+      if (answered) return;
+      answered = true;
+
+      const q = questions[quizIndex];
+      const buttons = [...document.querySelectorAll(".answer-btn")];
+      const feedback = document.getElementById("feedback");
+      const nextButton = document.getElementById("nextQuestionButton");
+
+      buttons.forEach(btn => btn.disabled = true);
+      buttons[q.correct].classList.add("correct");
+
+      if (selectedIndex === q.correct) {
+        score++;
+        selectedButton.classList.add("correct");
+        feedback.textContent = q.goodMessage;
+      } else {
+        selectedButton.classList.add("wrong");
+        feedback.textContent = q.badMessage;
+      }
+
+      document.getElementById("liveScore").textContent = `${score} point${score > 1 ? "s" : ""}`;
+      feedback.classList.remove("hidden");
+      nextButton.classList.remove("hidden");
+    }
+
+    function nextQuestion() {
+      if (!answered) return;
+
+      if (quizIndex < questions.length - 1) {
+        quizIndex++;
+        renderQuestion();
+      } else {
+        showQuizResult();
+      }
+    }
+
+    function showQuizResult() {
+      nextPage();
+      document.getElementById("resultScore").textContent = `${score} / ${questions.length}`;
+
+      let message = "";
+      if (score === 15) {
+        message = "Bon… c’est inquiétant. Tu connais notre première année par cœur 👑❤️";
+      } else if (score >= 12) {
+        message = "Tu peux rester ma copine 😌❤️ Contrat renouvelé pour l’année 02.";
+      } else if (score >= 9) {
+        message = "Acceptable 👀 Quelques révisions de Photobox seront quand même nécessaires 😂";
+      } else if (score >= 5) {
+        message = "Marie… je viens quand même de te faire UN LIVRE ENTIER pour réviser 😭";
+      } else {
+        message = "Notre couple est actuellement en cours d’examen par le jury 💀😂";
+      }
+
+      document.getElementById("resultMessage").textContent = message;
+    }
 
     function createHeart() {
       const heart = document.createElement("div");
@@ -348,18 +740,17 @@ Merci d’être entrée dans ma vie ❤️`;
       document.body.appendChild(s);
       setTimeout(() => s.remove(), 3000);
     }
-function finalReveal() {
-  pages[current].classList.remove("active");
 
-  // Aller directement à la dernière page
-  current = pages.length - 1;
-  pages[current].classList.add("active");
+    function finalReveal() {
+      pages[current].classList.remove("active");
+      current = pages.length - 1;
+      pages[current].classList.add("active");
 
-  for (let i = 0; i < 35; i++) {
-    setTimeout(createHeart, i * 80);
-    setTimeout(createSparkle, i * 55);
-  }
-}
+      for (let i = 0; i < 35; i++) {
+        setTimeout(createHeart, i * 80);
+        setTimeout(createSparkle, i * 55);
+      }
+    }
 
     setInterval(createHeart, 900);
     setInterval(createSparkle, 1200);
